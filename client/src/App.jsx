@@ -2,8 +2,8 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { auth } from "./lib/firebase";
-import { createUserWithEmailAndPassword, getIdToken, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { auth, providers } from "./lib/firebase";
+import { createUserWithEmailAndPassword, getIdToken, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
 import { useEffect } from 'react';
 import { useCallback } from 'react';
 
@@ -46,6 +46,11 @@ function App() {
     }
   }, []);
 
+  const handleGoogleSignin = useCallback(async function () {
+    const signinResult = await signInWithPopup(auth, providers.google);
+    setAuthUser(signinResult.user);
+  }, []);
+
   const handleLogout = useCallback(async function () {
     await signOut(auth);
     setAuthUser(null);
@@ -78,6 +83,7 @@ function App() {
             <input type='submit' value="S'inscrire" />
           </form>
           -- Ou --
+          <button onClick={handleGoogleSignin}>Se connecter via Google</button>
           <form onSubmit={handleLogin}>
             <h2>Connexion</h2>
             <input placeholder='email' name="email" />
