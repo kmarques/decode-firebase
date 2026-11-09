@@ -3,9 +3,10 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { auth, providers } from "./lib/firebase";
-import { createUserWithEmailAndPassword, getIdToken, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, getIdToken, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
 import { useEffect } from 'react';
 import { useCallback } from 'react';
+import Todos from './views/todos';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -16,8 +17,10 @@ function App() {
       onAuthStateChanged(auth, async function (user) {
         console.log("onMount", user);
         setAuthUser(user);
-        const authToken = await getIdToken(user);
-        console.log(authToken);
+        if (user) {
+          const authToken = await getIdToken(user);
+          console.log(authToken);
+        }
       })
       , 5000);
   }, []);
@@ -93,6 +96,7 @@ function App() {
         </>}
         {authUser && <p>{JSON.stringify(authUser)}<button onClick={handleLogout}>Log out</button></p>}
       </div>
+      <Todos />
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
